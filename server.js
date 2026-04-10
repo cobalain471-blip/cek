@@ -1,51 +1,46 @@
 const express = require('express');
-const session = require('express-session');
 const mongoose = require('mongoose');
+const path = require('path');
 
 const app = express();
+
+// ===== CONFIG =====
+const PORT = process.env.PORT || 3000;
+
+// ===== MIDDLEWARE =====
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(session({
-    secret: 'secret123',
-    resave: false,
-    saveUninitialized: true
-}));
+// ===== STATIC FILE =====
+app.use(express.static('public'));
 
-mongoose.connect(process.env.MONGO_URL)
+// ===== ROUTE TEST (ANTI ERROR) =====
+app.get('/test', (req, res) => {
+    res.send("SERVER HIDUP 🔥");
+});
+
+// ===== HOMEPAGE =====
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// ===== DATABASE CONNECT (ANTI CRASH) =====
+mongoose.connect(process.env.MONGO_URL || "")
 .then(() => console.log("✅ MongoDB Connected"))
 .catch(err => {
     console.log("❌ Mongo Error:", err.message);
 });
 
-// SCHEMA
-const Klik = mongoose.model('Klik', {
-    type: String,
-    waktu: { type: Date, default: Date.now }
+// ===== ERROR HANDLER (WAJIB) =====
+process.on('uncaughtException', (err) => {
+    console.log('❌ Uncaught Error:', err.message);
 });
 
-const Bayar = mongoose.model('Bayar', {
-    jumlah: Number,
-    waktu: { type: Date, default: Date.now }
+process.on('unhandledRejection', (err) => {
+    console.log('❌ Unhandled Rejection:', err);
 });
 
-// API
-app.post('/klik-thumbnail', async (req, res) => {
-    await Klik.create({ type: "thumbnail" });
-    res.send("ok");
-});
-
-app.post('/klik-bayar', async (req, res) => {
-    await Klik.create({ type: "bayar" });
-    res.send("ok");
-});
-
-app.post('/bayar', async (req, res) => {
-    await Bayar.create({ jumlah: req.body.jumlah });
-    res.send("ok");
-});
-
-// DASHBOARD
-app.get('/', (req, res) => {
-    res.send("AMAN 🔥");
+// ===== START SERVER =====
+app.listen(PORT, () => {
+    console.log(`🚀 Server jalan di port ${PORT}`);
 });
