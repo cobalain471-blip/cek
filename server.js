@@ -12,7 +12,11 @@ app.use(session({
     saveUninitialized: true
 }));
 
-mongoose.connect(process.env.MONGO_URL);
+mongoose.connect(process.env.MONGO_URL)
+.then(() => console.log("✅ MongoDB Connected"))
+.catch(err => {
+    console.log("❌ Mongo Error:", err.message);
+});
 
 // SCHEMA
 const Klik = mongoose.model('Klik', {
