@@ -1,9 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Landing</title>
+  <meta charset="UTF-8">
+  <title>Video Viral Eksklusif</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>🔥 WEBSITE HIDUP 🔥</h1>
+
+<h1>🔥 Video Viral Hari Ini</h1>
+
+<div class="card">
+  <p>Konten Eksklusif 🔒</p>
+  <button onclick="buy()">Unlock Video</button>
+</div>
+
+<div id="paymentBox" class="card hidden">
+  <h3>Scan QR untuk bayar</h3>
+  <p id="qr"></p>
+  <button onclick="simulatePay()">Saya Sudah Bayar</button>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
